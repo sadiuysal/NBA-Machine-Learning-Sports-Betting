@@ -8,26 +8,37 @@ tensorflow-macos
 tensorflow-metal
 #==0.6
 pandas
+keras
 numpy
 scikit_learn
-#==1.0
-<<<<<<< Updated upstream
-keras
-#==2.6.0
-xgboost
-#==1.4.2
-sbrscrape
-#==0.0.2
-Flask==2.2.2
 tweepy
 textblob
 openpyxl
-=======
-#keras==2.6.0
-#tensorflow==2.6.0
-xgboost
-#==1.4.2
 sbrscrape==0.0.4
 Flask
-#==2.2.2
->>>>>>> Stashed changes
+xgboost
+
+
+
+
+#==1.0
+# <<<<<<< Updated upstream
+# keras
+# #==2.6.0
+# xgboost
+# #==1.4.2
+# sbrscrape
+# #==0.0.2
+# Flask==2.2.2
+# tweepy
+# textblob
+# openpyxl
+# =======
+# #keras==2.6.0
+# #tensorflow==2.6.0
+# xgboost
+# #==1.4.2
+# sbrscrape==0.0.4
+# Flask
+# #==2.2.2
+# >>>>>>> Stashed changes
