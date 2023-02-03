@@ -13,12 +13,18 @@ data = data.values
 data = data.astype(float)
 
 x_test = tf.keras.utils.normalize(data, axis=1)
-predictions_array = []
-for row in x_test:
-    predictions_array.append(model.predict(np.array([row])))
 
-for index in predictions_array:
-    print(np.argmax(index))
+# evaluate model with test data
+loss, acc = model.evaluate(x_test, verbose=0)
+print('Test Accuracy: {}'.format(acc))
+
+
+# predictions_array = []
+# for row in x_test:
+#     predictions_array.append(model.predict(np.array([row])))
+
+# for index in predictions_array:
+#     print(np.argmax(index))
 
 # Print with confidence %
 # for index in predictions_array:

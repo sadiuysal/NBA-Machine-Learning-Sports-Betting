@@ -42,6 +42,8 @@ def fetch_game_data(sportsbook="fanduel"):
                 game_dict['home_team_ev'] = ev_match.group('ev')
         print(game_dict)
         games.append(game_dict)
+
+    print(games)
     return games
 
 
@@ -54,7 +56,7 @@ app = Flask(__name__)
 
 @app.route("/")
 def index():
-    fanduel = fetch_fanduel(ttl_hash=get_ttl_hash())
+    #fanduel = fetch_fanduel(ttl_hash=get_ttl_hash())
     draftkings = fetch_draftkings(ttl_hash=get_ttl_hash())
     betmgm = fetch_betmgm(ttl_hash=get_ttl_hash())
     return render_template('index.html', data={"fanduel": fanduel, "draftkings": draftkings, "betmgm": betmgm})
