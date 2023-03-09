@@ -64,7 +64,7 @@ app.jinja_env.add_extension('jinja2.ext.loopcontrols')
 
 @app.route("/")
 def index():
-    #fanduel = fetch_fanduel(ttl_hash=get_ttl_hash())
+    fanduel = fetch_fanduel(ttl_hash=get_ttl_hash())
     draftkings = fetch_draftkings(ttl_hash=get_ttl_hash())
     betmgm = fetch_betmgm(ttl_hash=get_ttl_hash())
 
