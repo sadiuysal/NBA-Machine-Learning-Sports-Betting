@@ -1,16 +1,19 @@
 import os
 import random
+import sqlite3
 import time
-from datetime import date, timedelta
+import sys
+from datetime import date, datetime, timedelta
 
 from tqdm import tqdm
 import pandas as pd
 
-from src.Utils.tools import get_json_data, to_data_frame
+sys.path.insert(1, os.path.join(sys.path[0], '..'))
+from Utils.tools import get_json_data, to_data_frame
 
 url = 'https://stats.nba.com/stats/' \
       'leaguedashteamstats?Conference=&' \
-      'DateFrom=10%2F15%2F{2}&DateTo={0}%2F{1}%2F{3}' \
+      'DateFrom=10%2F01%2F{2}&DateTo={0}%2F{1}%2F{3}' \
       '&Division=&GameScope=&GameSegment=&LastNGames=0&' \
       'LeagueID=00&Location=&MeasureType=Base&Month=0&' \
       'OpponentTeamID=0&Outcome=&PORound=0&PaceAdjust=N&' \
@@ -35,7 +38,7 @@ end_year_pointer = year[0]
 count = 0
 year_count = 0
 
-# wholeDfForSeason = pd.DataFrame()
+con = sqlite3.connect("../../Data/teams.sqlite")
 
 for season1 in tqdm(season):
     for month1 in tqdm(month):
@@ -43,38 +46,27 @@ for season1 in tqdm(season):
             count += 1
             end_year_pointer = year[count]
         for day1 in tqdm(days):
-            try:
-                general_data = get_json_data(
-                    url.format(month1, day1, begin_year_pointer, end_year_pointer, season1))
-                general_df = to_data_frame(general_data)
-                real_date = date(year=end_year_pointer, month=month1, day=day1) + timedelta(days=1)
-                general_df['Date'] = str(real_date)
-
-                directory2 = os.fsdecode('../../Team-Data/2022-23')
-                x = str(real_date).split('-')
-
-                name = directory2 + '/' + '{}-{}-{}'.format(str(int(x[1])), str(int(x[2])), season1) + '.xlsx'
-                #read the excel file in naming convetion {}-{}-{}'.format(str(int(month)), str(int(day)), season1) + '.xlsx':
-                #into a dataframe
-
-
-                #check if the file exists
-                # if os.path.exists(name):
-                #     df = pd.read_excel(name)
-                #     #print(df)
-                #     print('-----------------')
-                #
-                #     #append the dataframe to the wholeDfForSeason
-                #     wholeDfForSeason = pd.concat([wholeDfForSeason, df], ignore_index=True)
-
-
-                general_df.to_excel(name)
-            except:
+            if month1 == 10 and day1 < 19:
                 continue
-            time.sleep(random.randint(2, 4)) # sleep for 2-4 seconds
+            if month1 in [4,6,9,11] and day1 > 30:
+                continue
+            if month1 == 2 and day1 > 28:
+                continue
+            if end_year_pointer == datetime.now().year:
+                if month1 == datetime.now().month and day1 > datetime.now().day:
+                    continue
+                if month1 > datetime.now().month:
+                    continue
+            general_data = get_json_data(url.format(month1, day1, begin_year_pointer, end_year_pointer, season1))
+            general_df = to_data_frame(general_data)
+            real_date = date(year=end_year_pointer, month=month1, day=day1) + timedelta(days=1)
+            general_df['Date'] = str(real_date)
 
+            x = str(real_date).split('-')
+            general_df.to_sql(f"teams_{season1}-{str(int(x[1]))}-{str(int(x[2]))}", con, if_exists="replace")
+            
+            time.sleep(random.randint(1, 3))
     year_count += 1
     begin_year_pointer = year[count]
 
-#save the wholeDfForSeason to a excel file
-# wholeDfForSeason.to_excel('2022-2023.xlsx')
+con.close()
